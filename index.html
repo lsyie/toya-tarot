@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>토야의 오늘의 타로 💜 모바일</title>
+
+<style>
+
+/* =========================================
+   기본 설정
+========================================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body{
+  width:100%;
+  height:100vh;
+  overflow:hidden;
+
+  font-family:
+  "Pretendard",
+  "Noto Sans KR",
+  sans-serif;
+
+  color:white;
+
+  /* 신비로운 밤하늘 배경 */
+  background:
+  radial-gradient(circle at top, rgba(157,120,255,0.45), transparent 35%),
+  radial-gradient(circle at bottom, rgba(80,120,255,0.28), transparent 35%),
+  linear-gradient(180deg,#0e0620,#1b1037,#12051d);
+
+  position:relative;
+}
+
+/* =========================================
+   별빛 배경
+========================================= */
+body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background-image:
+  radial-gradient(white 1px, transparent 1px),
+  radial-gradient(#8fd9ff 1px, transparent 1px),
+  radial-gradient(#ffffffaa 1px, transparent 1px);
+
+  background-size:
+  90px 90px,
+  150px 150px,
+  210px 210px;
+
+  opacity:0.6;
+
+  animation:twinkle 6s ease infinite;
+
+  pointer-events:none;
+}
+
+@keyframes twinkle{
+  0%{ transform:translateY(0px);}
+  50%{ transform:translateY(-8px);}
+  100%{ transform:translateY(0px);}
+}
+
+/* =========================================
+   암막 커튼
+========================================= */
+.curtain-left,
+.curtain-right{
+  position:absolute;
+  top:0;
+  width:58px;
+  height:100%;
+  z-index:1;
+  opacity:0.9;
+}
+
+.curtain-left{
+  left:0;
+
+  background:
+  linear-gradient(90deg,#2a063c,#4b2070);
+
+  border-right:2px solid rgba(255,255,255,0.08);
+}
+
+.curtain-right{
+  right:0;
+
+  background:
+  linear-gradient(-90deg,#2a063c,#4b2070);
+
+  border-left:2px solid rgba(255,255,255,0.08);
+}
+
+/* =========================================
+   메인 앱
+========================================= */
+.app{
+  position:relative;
+  z-index:2;
+
+  width:100%;
+  height:100vh;
+
+  display:flex;
+  flex-direction:column;
+}
+
+/* =========================================
+   상단 제목
+========================================= */
+.header{
+
+  width:100%;
+  padding:
+  env(safe-area-inset-top)
+  18px
+  16px
+  16px;
+
+  text-align:center;
+
+  font-size:24px;
+  font-weight:800;
+
+  background:rgba(255,255,255,0.06);
+
+  backdrop-filter: blur(12px);
+
+  border-bottom:
+  1px solid rgba(255,255,255,0.08);
+
+  letter-spacing:1px;
+
+  color:#fff;
+
+  box-shadow:
+  0 5px 20px rgba(0,0,0,0.25);
+}
+
+/* 그라데이션 텍스트 */
+.header span{
+  background:
+  linear-gradient(to right,#ffd5ff,#ffffff,#9ed8ff);
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* =========================================
+   채팅 영역
+========================================= */
+.chat-box{
+  flex:1;
+
+  overflow-y:auto;
+
+  padding:
+  22px
+  16px
+  24px;
+
+  display:flex;
+  flex-direction:column;
+
+  gap:16px;
+
+  position:relative;
+}
+
+/* 스크롤바 */
+.chat-box::-webkit-scrollbar{
+  width:6px;
+}
+
+.chat-box::-webkit-scrollbar-thumb{
+  background:#8768ff;
+  border-radius:20px;
+}
+
+/* =========================================
+   메시지 공통
+========================================= */
+.message{
+  max-width:88%;
+
+  padding:16px 18px;
+
+  border-radius:22px;
+
+  line-height:1.7;
+
+  font-size:14px;
+
+  white-space:pre-wrap;
+
+  animation:fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* 토야 메시지 */
+.bot{
+  align-self:flex-start;
+
+  background:
+  rgba(183,136,255,0.16);
+
+  border:
+  1px solid rgba(255,255,255,0.1);
+
+  box-shadow:
+  0 0 16px rgba(174,138,255,0.2);
+}
+
+/* 사용자 메시지 */
+.user{
+  align-self:flex-end;
+
+  background:
+  linear-gradient(135deg,#5d7eff,#965fff);
+
+  box-shadow:
+  0 0 16px rgba(102,120,255,0.35);
+}
+
+/* =========================================
+   입력창 영역
+========================================= */
+.input-area{
+
+  width:100%;
+
+  padding:
+  14px
+  14px
+  calc(14px + env(safe-area-inset-bottom));
+
+  display:flex;
+  gap:10px;
+
+  background:
+  rgba(10,5,25,0.55);
+
+  backdrop-filter: blur(10px);
+
+  border-top:
+  1px solid rgba(255,255,255,0.06);
+}
+
+input{
+
+  flex:1;
+
+  height:52px;
+
+  border:none;
+  outline:none;
+
+  border-radius:18px;
+
+  padding:0 16px;
+
+  font-size:15px;
+
+  background:
+  rgba(255,255,255,0.12);
+
+  color:white;
+}
+
+input::placeholder{
+  color:#d8d8d8;
+}
+
+/* 버튼 */
+button{
+
+  width:92px;
+
+  border:none;
+
+  border-radius:18px;
+
+  background:
+  linear-gradient(135deg,#9079ff,#5d9dff);
+
+  color:white;
+
+  font-size:15px;
+  font-weight:700;
+
+  box-shadow:
+  0 0 18px rgba(121,120,255,0.25);
+
+  transition:0.2s;
+}
+
+button:active{
+  transform:scale(0.96);
+}
+
+/* =========================================
+   토끼 캐릭터
+   모바일용 SD 3D 느낌
+========================================= */
+.rabbit{
+
+  position:absolute;
+
+  right:-8px;
+  bottom:98px;
+
+  width:135px;
+  height:180px;
+
+  z-index:3;
+
+  pointer-events:none;
+}
+
+/* 머리 */
+.rabbit-head{
+
+  position:absolute;
+
+  width:104px;
+  height:104px;
+
+  left:16px;
+  top:24px;
+
+  border-radius:50%;
+
+  background:
+  linear-gradient(180deg,#ffffff,#ece2ff);
+
+  box-shadow:
+  inset -8px -8px 14px rgba(0,0,0,0.04),
+  0 8px 18px rgba(0,0,0,0.22);
+}
+
+/* 귀 */
+.ear{
+  position:absolute;
+
+  width:32px;
+  height:78px;
+
+  border-radius:40px;
+
+  background:
+  linear-gradient(180deg,#ffffff,#efe6ff);
+
+  top:-38px;
+}
+
+.ear::after{
+  content:"";
+
+  position:absolute;
+
+  width:14px;
+  height:48px;
+
+  left:9px;
+  top:12px;
+
+  border-radius:20px;
+
+  background:#ffd2f1;
+}
+
+.ear.left{
+  left:18px;
+  transform:rotate(-10deg);
+}
+
+.ear.right{
+  right:18px;
+  transform:rotate(10deg);
+}
+
+/* 눈 */
+.eye{
+
+  position:absolute;
+
+  width:22px;
+  height:28px;
+
+  border-radius:50%;
+
+  background:#172040;
+
+  top:42px;
+}
+
+.eye::after{
+  content:"";
+
+  position:absolute;
+
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:white;
+
+  top:5px;
+  left:4px;
+}
+
+.eye.left{
+  left:24px;
+}
+
+.eye.right{
+  right:24px;
+}
+
+/* 코 */
+.nose{
+
+  position:absolute;
+
+  width:10px;
+  height:8px;
+
+  background:#ff9ec9;
+
+  border-radius:50%;
+
+  left:50%;
+  top:64px;
+
+  transform:translateX(-50%);
+}
+
+/* 입 */
+.mouth{
+
+  position:absolute;
+
+  width:22px;
+  height:10px;
+
+  border-bottom:
+  2px solid #b17bff;
+
+  border-radius:
+  0 0 30px 30px;
+
+  left:50%;
+  top:72px;
+
+  transform:translateX(-50%);
+}
+
+/* 몸 */
+.rabbit-body{
+
+  position:absolute;
+
+  width:82px;
+  height:78px;
+
+  left:28px;
+  bottom:0;
+
+  border-radius:40px;
+
+  background:
+  linear-gradient(180deg,#ffffff,#e4d8ff);
+
+  box-shadow:
+  inset -8px -8px 14px rgba(0,0,0,0.04),
+  0 8px 18px rgba(0,0,0,0.22);
+}
+
+/* 하트 */
+.heart{
+
+  position:absolute;
+
+  font-size:18px;
+
+  animation:float 3s ease infinite;
+}
+
+.heart.one{
+  left:12px;
+  top:78px;
+}
+
+.heart.two{
+  right:10px;
+  top:44px;
+}
+
+/* 둥둥 */
+@keyframes float{
+  0%{ transform:translateY(0);}
+  50%{ transform:translateY(-8px);}
+  100%{ transform:translateY(0);}
+}
+
+/* =========================================
+   타로 구슬
+========================================= */
+.crystal-ball{
+
+  position:absolute;
+
+  left:16px;
+  bottom:120px;
+
+  width:92px;
+  height:92px;
+
+  border-radius:50%;
+
+  z-index:1;
+
+  background:
+  radial-gradient(circle at 30% 30%,
+  #ffffff,
+  #7f72ff 40%,
+  #322051 75%);
+
+  box-shadow:
+  0 0 30px rgba(135,120,255,0.5);
+}
+
+.crystal-ball::after{
+
+  content:"";
+
+  position:absolute;
+
+  width:44px;
+  height:18px;
+
+  left:24px;
+  bottom:-8px;
+
+  border-radius:20px;
+
+  background:#47376d;
+}
+
+/* =========================================
+   하트 쿠션
+========================================= */
+.heart-cushion{
+
+  position:absolute;
+
+  left:108px;
+  bottom:78px;
+
+  width:44px;
+  height:44px;
+
+  transform:rotate(-45deg);
+
+  background:#ff84c7;
+
+  border-radius:10px;
+
+  box-shadow:
+  0 0 18px rgba(255,110,190,0.35);
+}
+
+.heart-cushion::before,
+.heart-cushion::after{
+
+  content:"";
+
+  position:absolute;
+
+  width:44px;
+  height:44px;
+
+  border-radius:50%;
+
+  background:#ff84c7;
+}
+
+.heart-cushion::before{
+  top:-22px;
+  left:0;
+}
+
+.heart-cushion::after{
+  left:22px;
+  top:0;
+}
+
+/* =========================================
+   파란 장식 소품
+========================================= */
+.blue-star{
+
+  position:absolute;
+
+  top:94px;
+  left:78px;
+
+  font-size:26px;
+
+  color:#8fddff;
+
+  filter:drop-shadow(0 0 8px #8fddff);
+}
+
+.blue-gem{
+
+  position:absolute;
+
+  right:88px;
+  bottom:145px;
+
+  width:22px;
+  height:22px;
+
+  transform:rotate(45deg);
+
+  border-radius:4px;
+
+  background:#83ddff;
+
+  box-shadow:
+  0 0 16px rgba(130,220,255,0.7);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 암막 커튼 -->
+<div class="curtain-left"></div>
+<div class="curtain-right"></div>
+
+<!-- 타로 구슬 -->
+<div class="crystal-ball"></div>
+
+<!-- 하트 쿠션 -->
+<div class="heart-cushion"></div>
+
+<!-- 파란 소품 -->
+<div class="blue-star">✦</div>
+<div class="blue-gem"></div>
+
+<!-- 토끼 캐릭터 -->
+<div class="rabbit">
+
+  <div class="rabbit-head">
+
+    <div class="ear left"></div>
+    <div class="ear right"></div>
+
+    <div class="eye left"></div>
+    <div class="eye right"></div>
+
+    <div class="nose"></div>
+    <div class="mouth"></div>
+
+  </div>
+
+  <div class="rabbit-body"></div>
+
+  <div class="heart one">💜</div>
+  <div class="heart two">💙</div>
+
+</div>
+
+<!-- 앱 -->
+<div class="app">
+
+  <!-- 제목 -->
+  <div class="header">
+    <span>🌙 토야의 오늘의 타로 💜</span>
+  </div>
+
+  <!-- 대화창 -->
+  <div class="chat-box" id="chatBox"></div>
+
+  <!-- 입력창 -->
+  <div class="input-area">
+
+    <input
+      type="text"
+      id="userInput"
+      placeholder="토야에게 물어봐... 💜"
+    />
+
+    <button onclick="sendMessage()">
+      전송
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+/* =========================================
+   타로 카드 데이터
+========================================= */
+const tarotCards = [
+
+  {
+    name:"The Lovers ❤️",
+    meaning:"사랑과 소중한 인연, 감정의 연결을 의미하는 카드야."
+  },
+
+  {
+    name:"The Moon 🌙",
+    meaning:"숨겨진 감정과 직감, 불안하지만 중요한 흐름을 의미해."
+  },
+
+  {
+    name:"The Star ✨",
+    meaning:"희망과 치유, 긍정적인 미래의 흐름을 상징해."
+  },
+
+  {
+    name:"The Sun ☀️",
+    meaning:"행복과 성공, 밝은 에너지의 흐름이 느껴져."
+  },
+
+  {
+    name:"Death 🦋",
+    meaning:"끝이 아니라 새로운 시작과 변화를 의미해."
+  },
+
+  {
+    name:"Wheel of Fortune 🎡",
+    meaning:"운명의 변화와 새로운 흐름이 시작되는 카드야."
+  },
+
+  {
+    name:"The Empress 👑",
+    meaning:"풍요로움과 사랑, 따뜻한 감정을 상징해."
+  },
+
+  {
+    name:"Justice ⚖️",
+    meaning:"균형과 진실, 관계 속 공정함을 의미해."
+  },
+
+  {
+    name:"Ace of Cups 💙",
+    meaning:"새로운 사랑과 감정의 시작이 느껴져."
+  }
+
+];
+
+/* 채팅 영역 */
+const chatBox = document.getElementById("chatBox");
+
+/* =========================================
+   메시지 추가 함수
+========================================= */
+function addMessage(text, sender){
+
+  const message = document.createElement("div");
+
+  message.classList.add("message");
+  message.classList.add(sender);
+
+  message.innerText = text;
+
+  chatBox.appendChild(message);
+
+  /* 자동 스크롤 */
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+/* =========================================
+   카드 랜덤 선택
+========================================= */
+function getRandomCards(){
+
+  const shuffled = [...tarotCards];
+
+  shuffled.sort(() => Math.random() - 0.5);
+
+  return shuffled.slice(0,3);
+}
+
+/* =========================================
+   타로 해석
+========================================= */
+function generateReading(question){
+
+  const cards = getRandomCards();
+
+  let result = "🔮 토야가 별빛 아래 카드를 펼쳐봤어...\n\n";
+
+  result += "💫 선택된 카드 💫\n";
+
+  cards.forEach((card,index)=>{
+
+    result += `
+${index + 1}. ${card.name}
+- ${card.meaning}\n`;
+
+  });
+
+  result += "\n🌙 토야의 해석 🌙\n";
+
+  /* 연애 관련 질문 */
+  if(
+    question.includes("연애") ||
+    question.includes("사랑")
+  ){
+
+    result +=
+    "지금 너의 마음에는 중요한 감정의 흐름이 움직이고 있어.\n" +
+    "특히 상대와의 관계에서 솔직한 감정 표현이 중요한 시기야.\n" +
+    "조급함보다는 천천히 서로의 마음을 확인해보는 게 좋아 보여 💜";
+
+  }else{
+
+    result +=
+    "오늘은 감정과 운의 흐름이 부드럽게 이어지는 날이야.\n" +
+    "새로운 기회나 반가운 소식이 다가올 가능성이 느껴져.\n" +
+    "특히 너의 직감을 믿는다면 좋은 방향으로 이어질 수 있어 ✨";
+  }
+
+  result +=
+  "\n\n💌 더 궁금한 게 있다면 토야에게 추가 질문해줘!\n" +
+  "예: 연애운 / 재회운 / 인간관계 / 오늘 운세";
+
+  return result;
+}
+
+/* =========================================
+   메시지 전송
+========================================= */
+function sendMessage(){
+
+  const input = document.getElementById("userInput");
+
+  const text = input.value.trim();
+
+  if(text === "") return;
+
+  /* 사용자 메시지 */
+  addMessage(text,"user");
+
+  input.value = "";
+
+  setTimeout(()=>{
+
+    if(
+      text.includes("타로") ||
+      text.includes("운세") ||
+      text.includes("연애") ||
+      text.includes("재회") ||
+      text.includes("오늘")
+    ){
+
+      addMessage(
+        generateReading(text),
+        "bot"
+      );
+
+    }else{
+
+      addMessage(
+`토야는 별빛 아래에서 타로를 읽는 신비로운 토끼야 💜
+
+예를 들어 이렇게 질문해줘 ✨
+
+💌 오늘의 타로 봐줄래?
+💌 연애타로 봐줄래?
+💌 재회운 알려줘!
+💌 오늘 운세 어때?`,
+      "bot");
+
+    }
+
+  },700);
+
+}
+
+/* =========================================
+   엔터 입력
+========================================= */
+document
+.getElementById("userInput")
+.addEventListener("keypress", function(e){
+
+  if(e.key === "Enter"){
+    sendMessage();
+  }
+
+});
+
+/* =========================================
+   시작 인사
+========================================= */
+window.onload = () => {
+
+  addMessage(
+`안녕 💜
+토야는 별빛 아래에서 타로를 읽는 신비로운 토끼야 🌙
+
+오늘의 운세, 연애운, 재회운...
+궁금한 마음이 있다면 토야에게 질문해줘 ✨
+
+💌 "오늘의 타로 봐줄래?"
+💌 "연애타로 봐줄래?"`,
+  "bot");
+
+};
+
+</script>
+
+</body>
+</html>
